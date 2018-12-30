@@ -6,5 +6,5 @@ Rename/edit the config.json.sample file and add your vcenters then execute the g
 
 I made this in replacement to old PowerCLI scripts that wasn't very scalable and took very long time to execute. This uses golangs fantastic multithreading capability which reduced data collection time by 98.5% compared to PowerCLI scripts it replaced.
 
-# Supported
+# Support
 This is built on govmomi and should support 5.5 to 6.7. I've tested it and working on 5.5 to 6.5.
