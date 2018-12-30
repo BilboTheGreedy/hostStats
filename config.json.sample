@@ -1,0 +1,10 @@
+{
+    "Outpath": "result.csv",
+    "VCenters": [
+      { "Username": "svc-vmw-read@dc.lab", "Password": "Some", "Hostname": "vc01.dc.lab" },
+      { "Username": "svc-vmw-read@dc.lab", "Password": "Password", "Hostname": "vc02.dc.lab" },
+      { "Username": "svc-vmw-read@dc.lab", "Password": "Thats", "Hostname": "vc03.dc.lab" },
+      { "Username": "svc-vmw-read@dc.lab", "Password": "Good", "Hostname": "vc04.dc.lab" }
+      
+    ]
+  }
