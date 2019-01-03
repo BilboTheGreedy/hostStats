@@ -7,4 +7,14 @@
       { "Username": "svc-vmw-read@dc.lab", "Password": "Good", "Hostname": "vc04.dc.lab" }
       
     ]
+
+    "MailResult": true,
+    "Mail": {
+      "Host": "nosecurerelay.company.com",
+      "Port": 25,
+      "From": "noreply@company.com",
+      "To": "admin@company.com",
+      "Subject": "VMware host hardware summary",
+      "Body": "Summary report of ESXi hosts in datacenter"
+    }
   }

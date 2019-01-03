@@ -16,6 +16,7 @@ import (
 	"github.com/vmware/govmomi/units"
 	"github.com/vmware/govmomi/view"
 	"github.com/vmware/govmomi/vim25/mo"
+	gomail "gopkg.in/gomail.v2"
 )
 
 const (
@@ -24,6 +25,15 @@ const (
 	description = "collect host stats from multiple vcenter instances"
 	debug       = false
 )
+
+type mailSettings struct {
+	Host    string
+	Port    int
+	From    string
+	To      string
+	Body    string
+	Subject string
+}
 
 type hostStat struct {
 	Cluster            string
@@ -77,8 +87,10 @@ func (r hostStat) Slice() []string {
 
 // Configuration is used to store config data
 type Configuration struct {
-	Outpath  string
-	VCenters []*VCenter
+	Outpath    string
+	MailResult bool
+	VCenters   []*VCenter
+	Mail       *mailSettings
 }
 
 // VCenter for VMware vCenter connections
@@ -137,11 +149,17 @@ func main() {
 	}
 	//take the results and export them to csv file
 	fmt.Println("Main : merging results...")
+
 	for _, vcenter := range config.VCenters {
 		fmt.Println("Main : worker", vcenter.Worker, "got", len(vcenter.Data), "results from", vcenter.Hostname)
 		csvExport(vcenter.Data, config.Outpath)
 	}
 	fmt.Println("Main : Results saved to", config.Outpath)
+	if config.MailResult {
+		fmt.Println("Main : Mailing results", config.Outpath)
+		config.Mailit()
+	}
+
 }
 
 func worker(id int, config Configuration, vcenters <-chan *VCenter, done chan<- bool) {
@@ -163,6 +181,21 @@ func worker(id int, config Configuration, vcenters <-chan *VCenter, done chan<- 
 		done <- true
 	}
 
+}
+
+func (config *Configuration) Mailit() {
+	m := gomail.NewMessage()
+	m.SetHeader("From", config.Mail.From)
+	m.SetHeader("To", config.Mail.To)
+	m.SetHeader("Subject", config.Mail.Subject)
+	m.SetBody("text/html", config.Mail.Body)
+	m.Attach(config.Outpath)
+	d := gomail.NewDialer(config.Mail.Host, config.Mail.Port, "", "")
+
+	// Send the email to Bob, Cora and Dan.
+	if err := d.DialAndSend(m); err != nil {
+		panic(err)
+	}
 }
 
 // Connect to the actual vCenter connection used to query data
